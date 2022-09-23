@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
-import { Match } from 'src/shared';
+import { Match } from 'src/shared/decorators';
 
 export class CreateUserDTO {
   @IsNotEmpty()

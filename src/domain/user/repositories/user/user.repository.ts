@@ -2,7 +2,7 @@ import * as bcrypt from 'bcryptjs';
 
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaAdapter } from 'src/shared';
+import { PrismaAdapter } from 'src/shared/adapters';
 
 @Injectable()
 export class UserRepository extends PrismaAdapter {
