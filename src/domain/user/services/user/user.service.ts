@@ -17,10 +17,14 @@ export class UserService {
   }
 
   async verifyUserExistsByEmail(email: string) {
-    const findedUser = await this.userRepository.findByEmail(email);
+    const findedUser = await this.findByEmail(email);
 
     if (findedUser) {
       throw new UnprocessableEntityException(this.USER_ALREADY_EXISTS);
     }
+  }
+
+  async findByEmail(email: string) {
+    return await this.userRepository.findByEmail(email);
   }
 }

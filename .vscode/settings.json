@@ -1,0 +1,6 @@
+{
+  "exportall.config.relExclusion": [
+    "/src/shared/guards/index.ts",
+    "/src/shared/strategies/index.ts"
+  ]
+}
