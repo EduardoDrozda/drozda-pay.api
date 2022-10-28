@@ -12,15 +12,19 @@ export class UserService {
   async create(createUserDto: CreateUserDTO) {
     await this.verifyUserExistsByEmail(createUserDto.email);
     const { name, email, password } = createUserDto;
-
-    return await this.userRepository.create({ name, email, password });
+    await this.userRepository.create({ name, email, password });
+    return { name, email };
   }
 
-  private async verifyUserExistsByEmail(email: string) {
-    const findedUser = await this.userRepository.findByEmail(email);
+  async verifyUserExistsByEmail(email: string) {
+    const findedUser = await this.findByEmail(email);
 
     if (findedUser) {
       throw new UnprocessableEntityException(this.USER_ALREADY_EXISTS);
     }
+  }
+
+  async findByEmail(email: string) {
+    return await this.userRepository.findByEmail(email);
   }
 }
