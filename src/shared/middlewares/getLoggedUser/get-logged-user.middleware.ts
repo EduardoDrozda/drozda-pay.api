@@ -14,7 +14,6 @@ export class GetLoggedUserMiddleware implements NestMiddleware {
   private async getLoggedUser(req: any) {
     const token = req.headers.authorization;
     const { id } = await this.authService.getLoggedUser(token);
-    console.log('id', id);
     req.userId = id;
   }
 }

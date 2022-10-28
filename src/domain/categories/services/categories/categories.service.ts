@@ -19,12 +19,14 @@ export class CategoriesService {
     },
   ];
 
-  createDefaultCategories(userId: number) {
+  constructor(private readonly categoriesRepository: CategoriesRepository) {}
+
+  async createDefaultCategories(userId: number) {
     this.DEFAULT_CATEGORIES.forEach((category) => {
       this.create({ ...category, userId });
     });
   }
-  constructor(private readonly categoriesRepository: CategoriesRepository) {}
+
   async create(data: CreateCategoryDto) {
     return await this.categoriesRepository.create(data);
   }
