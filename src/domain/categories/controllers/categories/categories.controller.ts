@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Post,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/shared/guards';
 import { CreateCategoryDto } from '../../dtos';
@@ -17,7 +18,7 @@ export class CategoriesController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
-  async create(@Body() category: CreateCategoryDto) {
-    return category;
+  async create(@Req() { userId }: any, @Body() category: CreateCategoryDto) {
+    return await this.categoriesService.create({ ...category, userId });
   }
 }

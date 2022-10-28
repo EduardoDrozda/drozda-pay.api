@@ -1,11 +1,11 @@
 import { CategoriesRepository } from '../../repositories';
-import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from '../../dtos';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CategoriesService {
   constructor(private readonly categoriesRepository: CategoriesRepository) {}
-  async create(category: CreateCategoryDto) {
-    return 'create';
+  async create(data: CreateCategoryDto) {
+    return await this.categoriesRepository.create(data);
   }
 }
