@@ -1,11 +1,12 @@
 import * as request from 'supertest';
 
 import { HttpStatus, INestApplication } from '@nestjs/common';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
+import { UserModule, UserRepository, UserService } from 'src/domain/user';
 
 import { AuthController } from './auth.controller';
 import { AuthModule } from '../../auth.module';
-import { UserRepository } from 'src/domain/user';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -23,6 +24,7 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AuthModule],
+      providers: [],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);

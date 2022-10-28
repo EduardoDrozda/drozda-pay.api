@@ -19,5 +19,6 @@ import jwt from 'src/config/jwt';
     }),
   ],
   providers: [AuthService, JwtService, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

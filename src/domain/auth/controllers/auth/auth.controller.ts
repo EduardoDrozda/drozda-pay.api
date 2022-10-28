@@ -6,7 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/shared/guards';
 import { CredentialsDTO } from '../../dtos';
