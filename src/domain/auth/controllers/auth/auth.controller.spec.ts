@@ -98,4 +98,29 @@ describe('AuthController', () => {
 
     expect(userRepository.user.findUnique).toBeCalledTimes(1);
   });
+
+  it('should get logged user', async () => {
+    jest.spyOn(userRepository.user, 'findUnique').mockResolvedValue({
+      id: 1,
+      email: MOCK_USER.email,
+      name: MOCK_USER.name,
+      password: MOCK_USER.password,
+    });
+
+    const headers = {
+      Accept: 'application/json',
+      authorization:
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImVtYWlsQGVtYWlsLmNvbSIsInN1YiI6MSwiaWF0IjoxNjY2OTk4OTk5LCJleHAiOjE2NjcwODUzOTl9.zW23jvMMaLUC65mGiXn2SkIp0oYOCIq9JNY_--4du4I',
+    };
+
+    const { body } = await request(app.getHttpServer())
+      .get('/me')
+      .set(headers)
+      .expect('Content-Type', /json/)
+      .expect(HttpStatus.OK);
+
+    expect(body).toHaveProperty('id');
+    expect(body).toHaveProperty('email');
+    expect(body).toHaveProperty('name');
+  });
 });
