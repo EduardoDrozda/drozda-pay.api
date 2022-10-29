@@ -1,6 +1,9 @@
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+
 import { AuthModule } from './domain/auth/auth.module';
+import { CategoriesModule } from './domain/categories';
 import { ConfigModule } from '@nestjs/config';
-import { Module } from '@nestjs/common';
+import { GetLoggedUserMiddleware } from './shared/middlewares';
 import { UserModule } from './domain/user/user.module';
 import configuration from './config/configuration';
 
@@ -11,8 +14,28 @@ import configuration from './config/configuration';
     }),
     UserModule,
     AuthModule,
+    CategoriesModule,
   ],
   controllers: [],
-  providers: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer
+      .apply(GetLoggedUserMiddleware)
+      .exclude(
+        {
+          path: 'api/login',
+          method: RequestMethod.POST,
+        },
+        {
+          path: 'api/login/me',
+          method: RequestMethod.GET,
+        },
+        {
+          path: 'api/users',
+          method: RequestMethod.POST,
+        },
+      )
+      .forRoutes('*');
+  }
+}

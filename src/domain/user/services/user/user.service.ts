@@ -1,5 +1,6 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 
+import { CategoriesService } from 'src/domain/categories/services';
 import { CreateUserDTO } from '../../dtos';
 import { UserRepository } from '../../repositories';
 
@@ -7,13 +8,23 @@ import { UserRepository } from '../../repositories';
 export class UserService {
   private readonly USER_ALREADY_EXISTS = 'User already exists';
 
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly categoriesService: CategoriesService,
+  ) {}
 
   async create(createUserDto: CreateUserDTO) {
     await this.verifyUserExistsByEmail(createUserDto.email);
     const { name, email, password } = createUserDto;
-    await this.userRepository.create({ name, email, password });
+    const { id } = await this.userRepository.create({ name, email, password });
+    await this.createDefaultCategories(id);
     return { name, email };
+  }
+
+  private async createDefaultCategories(userId: number) {
+    const categories = await this.categoriesService.createDefaultCategories(
+      userId,
+    );
   }
 
   async verifyUserExistsByEmail(email: string) {
