@@ -36,3 +36,7 @@ jobs:
 
       - name: Run test application
         run: npm run test
+        env:
+          JWT_SECRET: 'secret'
+          JWT_EXPIRES_IN: '1d'
+          DATABASE_URL: 'file:./database.db'
