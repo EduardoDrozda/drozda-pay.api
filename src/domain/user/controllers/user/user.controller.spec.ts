@@ -3,15 +3,18 @@ import * as request from 'supertest';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CategoriesModule } from 'src/domain/categories';
+import { CategoriesService } from 'src/domain/categories/services';
 import { UserController } from './user.controller';
+import { UserModule } from '../../user.module';
 import { UserRepository } from '../../repositories';
-import { UserService } from '../../services';
 
 describe('UserController', () => {
   let app: INestApplication;
 
   let controller: UserController;
   let repository: UserRepository;
+  let categoryService: CategoriesService;
 
   const MOCK_USER = {
     name: 'John Doe',
@@ -22,12 +25,12 @@ describe('UserController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [UserService, UserRepository],
+      imports: [UserModule, CategoriesModule],
     }).compile();
 
     controller = module.get<UserController>(UserController);
     repository = module.get<UserRepository>(UserRepository);
+    categoryService = module.get<CategoriesService>(CategoriesService);
 
     app = module.createNestApplication();
     await app.init();
@@ -43,6 +46,9 @@ describe('UserController', () => {
 
   it('/POST user', async () => {
     jest.spyOn(repository.user, 'findUnique').mockResolvedValue(null);
+    jest
+      .spyOn(categoryService, 'createDefaultCategories')
+      .mockResolvedValue(null);
 
     jest.spyOn(repository.user, 'create').mockResolvedValue({
       id: 1,
@@ -77,6 +83,7 @@ describe('UserController', () => {
     });
 
     expect(repository.user.findUnique).toBeCalledTimes(1);
+    expect(categoryService.createDefaultCategories).toBeCalledWith(1);
   });
 
   it('/POST user with existing email must return 422 status', async () => {
