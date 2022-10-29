@@ -1,11 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CategoriesModule } from 'src/domain/categories';
+import { CategoriesService } from 'src/domain/categories/services';
+import { UserModule } from '../../user.module';
 import { UserRepository } from '../../repositories';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
   let service: UserService;
   let repository: UserRepository;
+  let categoryService: CategoriesService;
 
   const MOCK_USER = {
     name: 'John Doe',
@@ -16,11 +20,12 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService, UserRepository],
+      imports: [UserModule, CategoriesModule],
     }).compile();
 
     service = module.get<UserService>(UserService);
     repository = module.get<UserRepository>(UserRepository);
+    categoryService = module.get<CategoriesService>(CategoriesService);
   });
 
   afterEach(() => {
@@ -45,6 +50,10 @@ describe('UserService', () => {
       ),
     );
 
+    jest
+      .spyOn(categoryService, 'createDefaultCategories')
+      .mockResolvedValue(null);
+
     const newUser = await service.create(MOCK_USER);
 
     expect(repository.create).toBeCalledWith({
@@ -59,6 +68,8 @@ describe('UserService', () => {
 
     expect(newUser).toHaveProperty('email');
     expect(newUser).toHaveProperty('name');
+
+    expect(categoryService.createDefaultCategories).toBeCalledTimes(1);
   });
 
   it('should throw error when user already exists', async () => {
