@@ -1,6 +1,7 @@
 import { CategoriesRepository } from '../../repositories';
 import { CreateCategoryDto } from '../../dtos';
 import { Injectable } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class CategoriesService {
@@ -29,5 +30,33 @@ export class CategoriesService {
 
   async create(data: CreateCategoryDto) {
     return await this.categoriesRepository.create(data);
+  }
+
+  async findAllByUserId(userId: number) {
+    return await this.categoriesRepository.findAllByUserId(userId);
+  }
+
+  async findById(id: number, userId: number) {
+    const findCategory = await this.categoriesRepository.findById(id, userId);
+
+    if (!findCategory) {
+      throw new NotFoundException('Category not found');
+    }
+
+    return findCategory;
+  }
+
+  async update(id: number, userId: number, category: CreateCategoryDto) {
+    const findCategory = await this.findById(id, userId);
+
+    findCategory.name = category.name;
+    findCategory.description = category.description;
+
+    return await this.categoriesRepository.update(id, category);
+  }
+
+  async delete(id: number, userId: number) {
+    await this.findById(id, userId);
+    return await this.categoriesRepository.delete(id);
   }
 }
