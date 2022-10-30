@@ -64,4 +64,122 @@ describe('CategoriesController', () => {
         userId,
       });
   });
+
+  it('should return all categories', async () => {
+    const userId = 1;
+
+    const data = [
+      {
+        id: 1,
+        name: 'Entradas',
+        description: 'Categoria para valores que somam no saldo final',
+        userId,
+      },
+      {
+        id: 2,
+        name: 'Saídas',
+        description: 'Categoria para valores que subtraem no saldo final',
+        userId,
+      },
+    ];
+
+    jest.spyOn(repository, 'findAllByUserId').mockImplementation(async () => {
+      return data;
+    });
+
+    const result = await request(app.getHttpServer())
+      .get('/categories')
+      .expect(HttpStatus.OK)
+      .expect(data)
+      .expect('Content-Type', /json/);
+
+    expect(repository.findAllByUserId).toHaveBeenCalledTimes(1);
+    expect(result.body).toEqual(data);
+  });
+
+  it('should return category by id', async () => {
+    const userId = 1;
+
+    const data = {
+      id: 1,
+      name: 'Entradas',
+      description: 'Categoria para valores que somam no saldo final',
+      userId,
+    };
+
+    jest.spyOn(repository, 'findById').mockImplementation(async () => {
+      return data;
+    });
+
+    const result = await request(app.getHttpServer())
+      .get(`/categories/${data.id}`)
+      .expect(HttpStatus.OK)
+      .expect(data)
+      .expect('Content-Type', /json/);
+
+    expect(repository.findById).toHaveBeenCalledTimes(1);
+    expect(result.body).toEqual(data);
+  });
+
+  it('should throw error when category not found', async () => {
+    const userId = 1;
+
+    const data = {
+      id: 1,
+      name: 'Entradas',
+      description: 'Categoria para valores que somam no saldo final',
+      userId,
+    };
+
+    jest.spyOn(repository, 'findById').mockImplementation(async () => {
+      return null;
+    });
+
+    await request(app.getHttpServer())
+      .get(`/categories/${data.id}`)
+      .expect(HttpStatus.NOT_FOUND);
+  });
+
+  it('should update category', async () => {
+    const userId = 1;
+
+    const data = {
+      id: 1,
+      name: 'Entradas',
+      description: 'Categoria para valores que somam no saldo final',
+      userId,
+    };
+
+    jest.spyOn(repository, 'update').mockImplementation(async () => {
+      return data;
+    });
+
+    await request(app.getHttpServer())
+      .put(`/categories/${data.id}`)
+      .send(data)
+      .expect(HttpStatus.OK);
+
+    expect(repository.update).toHaveBeenCalledTimes(1);
+  });
+
+  it('should delete category', async () => {
+    const userId = 1;
+
+    const data = {
+      id: 1,
+      name: 'Entradas',
+      description: 'Categoria para valores que somam no saldo final',
+      userId,
+    };
+
+    jest.spyOn(repository, 'delete').mockImplementation(async () => {
+      return data;
+    });
+
+    await request(app.getHttpServer())
+      .delete(`/categories/${data.id}`)
+      .expect(HttpStatus.NO_CONTENT);
+
+    expect(repository.delete).toHaveBeenCalledTimes(1);
+  });
 });

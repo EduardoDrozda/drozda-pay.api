@@ -1,12 +1,12 @@
 import * as request from 'supertest';
 
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserModule, UserRepository, UserService } from 'src/domain/user';
 
 import { AuthController } from './auth.controller';
 import { AuthModule } from '../../auth.module';
+import { JwtAuthGuard } from 'src/shared/guards';
+import { UserRepository } from 'src/domain/user';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -25,7 +25,12 @@ describe('AuthController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [AuthModule],
       providers: [],
-    }).compile();
+    })
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: () => true,
+      })
+      .compile();
 
     controller = module.get<AuthController>(AuthController);
     userRepository = module.get<UserRepository>(UserRepository);
