@@ -60,11 +60,17 @@ describe('CategoriesService', () => {
 
   it('should update a category', async () => {
     const userId = 1;
+
     const data = {
       name: 'Entradas',
       description: 'Categoria para valores que somam no saldo final',
       userId,
     };
+
+    jest.spyOn(repository, 'findById').mockResolvedValue({
+      id: 1,
+      ...data,
+    });
 
     jest.spyOn(repository, 'update').mockImplementation(async () => {
       return {
@@ -116,14 +122,18 @@ describe('CategoriesService', () => {
   it('should delete a category', async () => {
     const userId = 1;
 
-    jest.spyOn(repository, 'delete').mockImplementation(async () => {
-      return {
-        id: 1,
-        name: 'Entradas',
-        description: 'Categoria para valores que somam no saldo final',
-        userId,
-      };
+    const data = {
+      name: 'Entradas',
+      description: 'Categoria para valores que somam no saldo final',
+      userId,
+    };
+
+    jest.spyOn(repository, 'findById').mockResolvedValue({
+      id: 1,
+      ...data,
     });
+
+    jest.spyOn(repository, 'delete').mockImplementation(null);
 
     await service.delete(userId, 1);
     expect(repository.delete).toHaveBeenCalled();
