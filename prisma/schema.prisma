@@ -16,16 +16,34 @@ model User {
   name       String
   password   String
   categories Category[]
+  Spend      Spend[]
 
   @@map("users")
 }
 
 model Category {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   name        String
   description String
-  User        User?  @relation(fields: [userId], references: [id])
-  userId      Int?   @map("user_id")
+  User        User?   @relation(fields: [userId], references: [id])
+  userId      Int     @map("user_id")
+  Spend       Spend[]
 
   @@map("categories")
+}
+
+model Spend {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  amount      Float
+  date        DateTime
+
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int       @map("category_id")
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int   @map("user_id")
+
+  @@map("spends")
 }

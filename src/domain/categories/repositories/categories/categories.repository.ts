@@ -1,7 +1,6 @@
-import { Category, Prisma } from '@prisma/client';
-
 import { CreateCategoryDto } from '../../dtos';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaAdapter } from 'src/shared/adapters';
 
 @Injectable()
@@ -29,7 +28,7 @@ export class CategoriesRepository extends PrismaAdapter {
     });
   }
 
-  async update(id: number, category: CreateCategoryDto) {
+  async update(id: number, category: Prisma.CategoryCreateInput) {
     return await this.category.update({
       where: {
         id,

@@ -4,6 +4,7 @@ import { AuthModule } from './domain/auth/auth.module';
 import { CategoriesModule } from './domain/categories';
 import { ConfigModule } from '@nestjs/config';
 import { GetLoggedUserMiddleware } from './shared/middlewares';
+import { SpendsModule } from './domain/spends';
 import { UserModule } from './domain/user/user.module';
 import configuration from './config/configuration';
 
@@ -15,6 +16,7 @@ import configuration from './config/configuration';
     UserModule,
     AuthModule,
     CategoriesModule,
+    SpendsModule,
   ],
   controllers: [],
 })
