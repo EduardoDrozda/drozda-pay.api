@@ -22,9 +22,7 @@ export class UserService {
   }
 
   private async createDefaultCategories(userId: number) {
-    const categories = await this.categoriesService.createDefaultCategories(
-      userId,
-    );
+    await this.categoriesService.createDefaultCategories(userId);
   }
 
   async verifyUserExistsByEmail(email: string) {
