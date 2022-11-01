@@ -7,7 +7,6 @@ import { PrismaAdapter } from 'src/shared/adapters';
 export class SpendsRepository extends PrismaAdapter {
   async onModuleInit(): Promise<void> {
     super.onModuleInit();
-
     await this.setSpendsMiddleware();
   }
   async setSpendsMiddleware() {
