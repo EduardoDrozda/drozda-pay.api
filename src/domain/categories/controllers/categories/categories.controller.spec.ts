@@ -61,7 +61,6 @@ describe('CategoriesController', () => {
         id: 1,
         name: data.name,
         description: data.description,
-        userId,
       });
   });
 
@@ -90,11 +89,10 @@ describe('CategoriesController', () => {
     const result = await request(app.getHttpServer())
       .get('/categories')
       .expect(HttpStatus.OK)
-      .expect(data)
       .expect('Content-Type', /json/);
 
     expect(repository.findAllByUserId).toHaveBeenCalledTimes(1);
-    expect(result.body).toEqual(data);
+    expect(result.body.length).toEqual(2);
   });
 
   it('should return category by id', async () => {
@@ -114,7 +112,6 @@ describe('CategoriesController', () => {
     const result = await request(app.getHttpServer())
       .get(`/categories/${data.id}`)
       .expect(HttpStatus.OK)
-      .expect(data)
       .expect('Content-Type', /json/);
 
     expect(repository.findById).toHaveBeenCalledTimes(1);
@@ -150,6 +147,10 @@ describe('CategoriesController', () => {
       userId,
     };
 
+    jest.spyOn(repository, 'findById').mockImplementation(async () => {
+      return data;
+    });
+
     jest.spyOn(repository, 'update').mockImplementation(async () => {
       return data;
     });
@@ -171,6 +172,10 @@ describe('CategoriesController', () => {
       description: 'Categoria para valores que somam no saldo final',
       userId,
     };
+
+    jest.spyOn(repository, 'findById').mockImplementation(async () => {
+      return data;
+    });
 
     jest.spyOn(repository, 'delete').mockImplementation(async () => {
       return data;

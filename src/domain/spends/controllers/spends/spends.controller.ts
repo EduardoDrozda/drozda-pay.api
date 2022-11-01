@@ -7,6 +7,9 @@ import {
   UseGuards,
   Req,
   Get,
+  Put,
+  Param,
+  Delete,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/shared/guards';
 import { CreateSpendDto } from '../../dtos';
@@ -27,5 +30,28 @@ export class SpendsController {
   @UseGuards(JwtAuthGuard)
   async findAll(@Req() { userId }: any) {
     return await this.spendsService.findAll(userId);
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async findById(@Req() { userId }: any, @Body('id') id: number) {
+    return await this.spendsService.findById(id, userId);
+  }
+
+  @Put('/:id')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Req() { userId }: any,
+    @Param('id') id: string,
+    @Body() category: CreateSpendDto,
+  ) {
+    return await this.spendsService.update(parseInt(id, 10), userId, category);
+  }
+
+  @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Req() { userId }: any, @Param('id') id: string) {
+    return await this.spendsService.delete(parseInt(id, 10), userId);
   }
 }
